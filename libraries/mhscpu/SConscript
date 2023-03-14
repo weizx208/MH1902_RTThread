@@ -1,0 +1,66 @@
+import rtconfig
+Import('RTT_ROOT')
+from building import *
+
+# get current directory
+cwd = GetCurrentDir()
+
+# The set of source files associated with this SConscript file.
+src = Split("""
+Device/MegaHunt/mhscpu/Source/system_mhscpu.c
+MHSCPU_Driver/src/mhscpu_dma.c
+MHSCPU_Driver/src/mhscpu_cache.c
+MHSCPU_Driver/src/mhscpu_crc.c
+MHSCPU_Driver/src/mhscpu_bpk.c
+MHSCPU_Driver/src/mhscpu_exti.c
+MHSCPU_Driver/src/mhscpu_it.c
+MHSCPU_Driver/src/mhscpu_otp.c
+MHSCPU_Driver/src/mhscpu_sysctrl.c
+MHSCPU_Driver/src/misc.c
+""")
+
+if GetDepend(['RT_USING_PIN']):
+    src += ['MHSCPU_Driver/src/mhscpu_gpio.c']
+    
+if GetDepend(['RT_USING_SERIAL']):
+    src += ['MHSCPU_Driver/src/mhscpu_uart.c']
+
+if GetDepend(['RT_USING_I2C']):
+    src += ['MHSCPU_Driver/src/mhscpu_i2c.c']
+    
+if GetDepend(['RT_USING_SPI']):
+    src += ['MHSCPU_Driver/src/mhscpu_spi.c']
+
+if GetDepend(['RT_USING_USB_HOST']) or GetDepend(['RT_USING_USB_DEVICE']):
+    src += ['SCPU_USB_Lib/SCPU_USB_OTG_Driver/src/usb_core.c']
+    src += ['SCPU_USB_Lib/SCPU_USB_OTG_Driver/src/usb_dcd.c'] 
+    src += ['SCPU_USB_Lib/SCPU_USB_OTG_Driver/src/usb_dcd_int.c']
+    src += ['SCPU_USB_Lib/SCPU_USB_Device_Library/Core/src/usbd_core.c']
+    src += ['SCPU_USB_Lib/SCPU_USB_Device_Library/Core/src/usbd_ioreq.c']
+    src += ['SCPU_USB_Lib/SCPU_USB_Device_Library/Core/src/usbd_req.c']
+
+if GetDepend(['RT_USING_HWTIMER']) or GetDepend(['RT_USING_PWM']) or GetDepend(['RT_USING_PULSE_ENCODER']):
+    src += ['MHSCPU_Driver/src/mhscpu_timer.c']
+
+if GetDepend(['RT_USING_ADC']):
+    src += ['MHSCPU_Driver/src/mhscpu_adc.c']
+
+if GetDepend(['RT_USING_RTC']):
+    src += ['MHSCPU_Driver/src/mhscpu_rtc.c']
+
+if GetDepend(['RT_USING_WDT']):
+    src += ['MHSCPU_Driver/src/mhscpu_wdt.c']
+
+if GetDepend(['BSP_USING_ON_CHIP_FLASH']):
+    src += ['MHSCPU_Driver/src/mhscpu_qspi.c']
+
+path = [cwd + '/CMSIS/Include', 
+    cwd + '/Device/MegaHunt/mhscpu/Include',
+    cwd + '/MHSCPU_Driver/inc',
+    cwd + '/SCPU_USB_Lib/SCPU_USB_OTG_Driver/inc',
+    cwd + '/SCPU_USB_Lib/SCPU_USB_Device_Library/Core/inc']
+
+CPPDEFINES = ['USE_HAL_DRIVER']
+group = DefineGroup('Libraries', src, depend = [''], CPPPATH = path, CPPDEFINES = CPPDEFINES)
+
+Return('group')

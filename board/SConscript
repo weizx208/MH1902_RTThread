@@ -1,0 +1,38 @@
+import os
+import rtconfig
+from building import *
+
+Import('SDK_LIB')
+
+cwd = GetCurrentDir()
+
+# add general drivers
+src = Split('''
+board.c
+''')
+
+if GetDepend(['BSP_USING_SPI_FLASH']):
+    src += Glob('ports/spi_flash_init.c')
+
+if GetDepend(['RT_USING_DFS_MNTTABLE']):
+	src += Glob('ports/fs_init.c')
+
+if GetDepend(['WIZ_USING_W5500']):
+	src += Glob('ports/w5500_init.c')
+
+path =  [cwd]
+path += [cwd + '/CubeMX_Config/Inc']
+path += [cwd + '/ports']
+
+startup_path_prefix = SDK_LIB
+
+if rtconfig.CROSS_TOOL == 'gcc':
+    src += [startup_path_prefix + '/mhscpu/Device/MegaHunt/mhscpu/Source/ARM/startup_mhscpu.s']
+elif rtconfig.CROSS_TOOL == 'keil':
+    src += [startup_path_prefix + '/mhscpu/Device/MegaHunt/mhscpu/Source/ARM/startup_mhscpu.s']
+elif rtconfig.CROSS_TOOL == 'iar':
+    src += [startup_path_prefix + '/mhscpu/Device/MegaHunt/mhscpu/Source/IAR/startup_mhscpu.s']
+    
+CPPDEFINES = ['MH1902, USE_STDPERIPH_DRIVER']
+group = DefineGroup('Drivers', src, depend = [''], CPPPATH = path, CPPDEFINES = CPPDEFINES)
+Return('group')
