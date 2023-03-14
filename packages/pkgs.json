@@ -1,0 +1,32 @@
+[
+ {
+  "path": "/packages/iot/pahomqtt", 
+  "ver": "v1.1.0", 
+  "name": "PAHOMQTT"
+ }, 
+ {
+  "path": "/packages/iot/webclient", 
+  "ver": "v2.1.2", 
+  "name": "WEBCLIENT"
+ }, 
+ {
+  "path": "/packages/iot/netutils", 
+  "ver": "v1.3.1", 
+  "name": "NETUTILS"
+ }, 
+ {
+  "path": "/packages/iot/wiznet", 
+  "ver": "latest", 
+  "name": "WIZNET"
+ }, 
+ {
+  "path": "/packages/security/mbedtls", 
+  "ver": "v2.7.10.1", 
+  "name": "MBEDTLS"
+ }, 
+ {
+  "path": "/packages/tools/ulog_file", 
+  "ver": "v1.0.0", 
+  "name": "ULOG_FILE"
+ }
+]
